@@ -8,10 +8,10 @@ const Game = () => {
   const { game } = useGameContext()
 
   return (
-    <div>
+    <section>
       <Grid items={game.items} />
       {game.isGameOver && <GameOver />}
-    </div>
+    </section>
   )
 }
 
