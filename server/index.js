@@ -1,8 +1,10 @@
 import {WebSocketServer} from 'ws';
 
-// Charcodes: 0x00=request server send user data (toServer), 0x03=keepalive (serverClient)
-//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not exists (toClient), 0x13=player already connected (toClient), 0x14=player data on reconnect (toClient)
+// Charcodes: 0x00=request server send user data (toServer), 0x01=player data on reconnect (toClient), 0x03=keepalive (serverClient)
+//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not exists (toClient), 0x13=player already connected (toClient)
 //            0x20=player added image to card (toServer), 0x21=player removed image from card (toServer), 0x22=player done with card (toServer) other player done with card (toClient)
+
+const squareTexts = ['temp1', 'temp2', 'temp3', 'temp4', 'temp5', 'temp6', 'temp7', 'temp8', 'temp9'];
 
 const wss = new WebSocketServer({port: 443});
 let lobbies = {};
@@ -52,7 +54,7 @@ wss.on('connection', (ws, req) =>{
 					ws.close();
 				}else{					// Player not connected
 					player.ws = ws;
-					ws.send(charCode(0x14) + JSON.stringify(player.card));
+					ws.send(charCode(0x01) + JSON.stringify(player.card));
 				}
 			}else{
 				lobbies[lobby].players.push({ws: ws, name: name, card: [null, null, null, null, null, null, null, null, null], time: null});
@@ -75,11 +77,14 @@ wss.on('connection', (ws, req) =>{
 					players.push({name: player.name/*, card: player.card, time: player.time*/});
 				});
 				ws.send(JSON.stringify(players));
-			case 0x22:
-				sendMsg(charCode(0x22) + name, lobby);
+			case 0x20:
+				setCard(msg[1], `https://sputnik.zone/school/Sammanslaget2024/image/images/${lobby + name + msg[1]}`);
 				break;
 			case 0x21:
 				fetch(`https://sputnik.zone/school/Sammanslaget2024/image/removeImage.php?id=${msg[1]}`);
+				break;
+			case 0x22:
+				sendMsg(charCode(0x22) + name, lobby);
 				break;
 			default:
 				//sendMsg({player: name, msg: msg}, lobby);

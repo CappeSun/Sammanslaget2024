@@ -11,7 +11,7 @@ export class Bingo{
 	}
 
 	enterLobby(name, lobby, isCreate){
-		ws = new WebSocket(`wss://renderimojs.com/${name + charCode(0x00) + isCreate ? charCode(0x10) + lobby}`);
+		ws = new WebSocket(`wss://renderimojs.com/${name + charCode(0x00) + isCreate ? charCode(0x10) : '' + lobby}`);
 		ws.onopen = () =>{
 			ws.onmessage = (event) =>{
 				switch (msg[0]){
