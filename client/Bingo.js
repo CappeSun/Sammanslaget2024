@@ -1,30 +1,46 @@
 export class Bingo{
-	constructor(onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onplayeralreadyconn, onlobbyfull){
-		this.ws;
-		#onwin = onwin;
-		#ongetusers = ongetusers;
-		#onstart = onstart;
-		#onreconnect = onreconnect;
-		#ondisconnect = ondisconnect;
-		#onnametaken = onnametaken;
-		#onlobbytaken = onlobbytaken;
-		#onplayeralreadyconn = onplayeralreadyconn;
-		#onlobbyfull = onlobbyfull;
+	#onwin;
+	#ongetusers;
+	#onstart;
+	#onreconnect;
+	#ondisconnect;
+	#onnametaken;
+	#onlobbytaken;
+	#onplayeralreadyconn;
+	#onlobbyfull;
+	#onlobbynameempty;
+	constructor(onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onlobbyfull, onplayeralreadyconn, onlobbynameempty){
+		this.onwin = onwin;
+		this.ongetusers = ongetusers;
+		this.onstart = onstart;
+		this.onreconnect = onreconnect;
+		this.ondisconnect = ondisconnect;
+		this.onnametaken = onnametaken;
+		this.onlobbytaken = onlobbytaken;
+		this.onplayeralreadyconn = onplayeralreadyconn;
+		this.onlobbyfull = onlobbyfull;
+		this.onlobbynameempty = onlobbynameempty;
 	}
 
 	enterLobby(name, lobby, isCreate){
-		ws = new WebSocket(`ws://0.0.0.0:443/${name + charCode(0x00) + isCreate ? charCode(0x10) : '' + lobby}`);
-		ws.onopen = () =>{
-			ws.onmessage = (event) =>{
-				switch (msg[0]){
+		if (this.ws) return;		// Cannot enter lobby while connected to lobby
+
+		this.ws = new WebSocket(`ws://0.0.0.0:443/${name + charCode(0x00) + (isCreate ? charCode(0x10) : '') + lobby}`);
+		this.ws.onopen = () =>{
+			this.ws.onmessage = (event) =>{
+				let msg = event.data;
+				switch (msg.charCodeAt(0)){
 					case 0x00:
-						this.ongetusers(JSON.parse(msg.substring(1));
+						this.ongetusers(JSON.parse(msg.substring(1)));		// Returns array of usernames
 						break;
 					case 0x01:
-						this.onreconnect(JSON.parse(msg.substring(1)));
+						this.onreconnect(JSON.parse(msg.substring(1)));		// Returns returning players card as array of urls/null
+						break;
+					case 0x02:
+						this.onstart(JSON.parse(msg.substring(1)));		// Returns lobby card
 						break;
 					case 0x03:						// Keepalive
-						ws.send(charCode(0x03));
+						this.ws.send(charCode(0x03));
 						break;
 					case 0x10:
 						this.onlobbytaken();
@@ -41,8 +57,8 @@ export class Bingo{
 					case 0x14:
 						this.onlobbyfull();
 						break;
-					case 0x22:
-						this.onwin(msg.substring(1));
+					case 0x1C:
+						this.onwin(msg.substring(1));		// Returns winners username
 						break;
 				}
 			}
@@ -50,10 +66,11 @@ export class Bingo{
 		this.name = name;
 		this.lobby = lobby;
 
-		ws.onclose = () =>{
+		this.ws.onclose = () =>{
 			ondisconnect();
 			delete this.name;
 			delete this.lobby;
+			delete this.ws;
 		}
 	}
 
@@ -62,11 +79,11 @@ export class Bingo{
 	}
 
 	getUsers(){			// Returns names of other users in lobby
-		ws.send(0x00);
+		this.ws.send(0x00);
 	}
 
 	add(id, formData){					// Add image to server
-		ws.send(charCode(0x20) + id);
+		this.ws.send(charCode(0x1A) + id);
 		fetch(`https://sputnik.zone/school/Sammanslaget2024/image/uploadImage.php?lobbynameid=${this.lobby + this.name + id}`, {
 			method: 'POST',
 			body: formData
@@ -74,14 +91,14 @@ export class Bingo{
 	}
 
 	remove(id){							// Remove image from server
-		ws.send(charCode(0x21) + id);
+		this.ws.send(charCode(0x1B) + id);
 	}
 
 	win(){							// Win the game
-		ws.send(charCode(0x22));
+		this.ws.send(charCode(0x1C));
 	}
+}
 
-	#charCode(code){
-		return String.fromCharCode(code);
-	}
+function charCode(code){
+	return String.fromCharCode(code);
 }
