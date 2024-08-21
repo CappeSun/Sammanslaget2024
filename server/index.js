@@ -1,7 +1,7 @@
 import {WebSocketServer} from 'ws';
 
-// Charcodes: 0x00=request server send user data (toServer), 0x01=player data on reconnect (toClient), 0x03=keepalive (serverClient)
-//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not exists (toClient), 0x13=player already connected (toClient)
+// Charcodes: 0x00=request server send user data (toServer), 0x01=player data on reconnect (toClient), 0x02=start lobby (toClient), 0x03=keepalive (serverClient)
+//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13=player already connected (toClient), 0x14=lobby full (toClient)
 //            0x20=player added image to card (toServer), 0x21=player removed image from card (toServer), 0x22=player done with card (toServer) other player done with card (toClient)
 
 const squareTexts = ['temp1', 'temp2', 'temp3', 'temp4', 'temp5', 'temp6', 'temp7', 'temp8', 'temp9'];
@@ -44,7 +44,10 @@ wss.on('connection', (ws, req) =>{
 				card: createCard(),
 				players: []
 			}
+			lobbies[lobby].players.push({ws: ws, name: name, card: [null, null, null, null, null, null, null, null, null], time: null});
 			ws.send('yuppi c:');
+
+			console.log(`${name} connected to ${lobby}, currently ${lobbies[lobby].length} players in ${lobby}`);
 		}
 	}else{						// Not create lobby
 		if (lobbies[lobby]){							// Check if lobby exists
@@ -57,18 +60,22 @@ wss.on('connection', (ws, req) =>{
 					ws.send(charCode(0x01) + JSON.stringify(player.card));
 				}
 			}else{
-				lobbies[lobby].players.push({ws: ws, name: name, card: [null, null, null, null, null, null, null, null, null], time: null});
+				if (lobbies[lobby].players.length < 2){
+					lobbies[lobby].players.push({ws: ws, name: name, card: [null, null, null, null, null, null, null, null, null], time: null});
+				}else{
+					ws.send(charCode(0x14));
+					ws.close();
+				}
+
+				console.log(`${name} connected to ${lobby}, currently ${lobbies[lobby].length} players in ${lobby}`);
 			}
 		}else{						// Lobby not exists
 			ws.send(charCode(0x12));
 		}
 	}
 
-	console.log(`${name} connected to ${lobby}, currently ${lobbies[lobby].length} players in ${lobby}`);
-
 	ws.on('message', (msg) =>{
 		active = true;
-		if (msg[0] == 0x03) return;   // Keepalive
 
 		switch (msg[0]){
 			case 0x00:
@@ -77,11 +84,15 @@ wss.on('connection', (ws, req) =>{
 					players.push({name: player.name/*, card: player.card, time: player.time*/});
 				});
 				ws.send(JSON.stringify(players));
+				break;
+			case 0x03:		// Keepalive
+				break;
 			case 0x20:
 				setCard(msg[1], `https://sputnik.zone/school/Sammanslaget2024/image/images/${lobby + name + msg[1]}`);
 				break;
 			case 0x21:
 				fetch(`https://sputnik.zone/school/Sammanslaget2024/image/removeImage.php?id=${msg[1]}`);
+				setCard(msg[1], null);
 				break;
 			case 0x22:
 				sendMsg(charCode(0x22) + name, lobby);
@@ -117,13 +128,13 @@ wss.on('connection', (ws, req) =>{
 });
 
 function sendMsg(msg, lobby){
-	lobbies.[lobby].players.forEach((player) =>{
+	lobbies[lobby].players.forEach((player) =>{
 		if (player.lobby == lobby) player.ws.send(msg);
 	});
 }
 
 function sendTo(msg, lobby, name){
-	lobbies.[lobby].players.forEach((player) =>{
+	lobbies[lobby].players.forEach((player) =>{
 		if (player.name == name) player.ws.send(msg);
 	});
 }
