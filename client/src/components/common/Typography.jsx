@@ -1,6 +1,12 @@
 import { cn } from '@/lib/util'
 
-const Typography = ({ variant = 'p', component, children, ...props }) => {
+const Typography = ({
+  variant = 'p',
+  component,
+  children,
+  className,
+  ...props
+}) => {
   const Comp = component ?? variant
 
   const styles = {
@@ -20,7 +26,7 @@ const Typography = ({ variant = 'p', component, children, ...props }) => {
   }
 
   return (
-    <Comp className={cn(styles[variant])} {...props}>
+    <Comp className={cn(styles[variant], className)} {...props}>
       {children}
     </Comp>
   )

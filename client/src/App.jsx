@@ -4,6 +4,7 @@ import Home from '@/pages/Home'
 import Game from '@/pages/Game'
 import GameOutlet from './GameOutlet'
 import MainLayout from './components/layout/MainLayout'
+import Lobby from './pages/Lobby'
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
           <Route path='/' element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path='game' element={<GameOutlet />}>
+              <Route index element={<Lobby />} />
               <Route path=':id' element={<Game />} />
             </Route>
           </Route>
