@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer {
+  .grid-item-before {
+    @apply before:absolute before:right-0 before:top-0 before:h-full before:w-[1px] before:bg-black;
+  }
+
+  .grid-item-after {
+    @apply after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-black;
+  }
+}
