@@ -1,5 +1,5 @@
 export class Bingo{
-	constructor(onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken){
+	constructor(onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onplayeralreadyconn, onlobbyfull){
 		this.ws;
 		#onwin = onwin;
 		#ongetusers = ongetusers;
@@ -8,6 +8,8 @@ export class Bingo{
 		#ondisconnect = ondisconnect;
 		#onnametaken = onnametaken;
 		#onlobbytaken = onlobbytaken;
+		#onplayeralreadyconn = onplayeralreadyconn;
+		#onlobbyfull = onlobbyfull;
 	}
 
 	enterLobby(name, lobby, isCreate){
@@ -21,8 +23,23 @@ export class Bingo{
 					case 0x01:
 						this.onreconnect(JSON.parse(msg.substring(1)));
 						break;
-					case 0x03:
+					case 0x03:						// Keepalive
 						ws.send(charCode(0x03));
+						break;
+					case 0x10:
+						this.onlobbytaken();
+						break;
+					case 0x11:
+						this.onnametaken();
+						break;
+					case 0x12:
+						this.onlobbynotfound();
+						break;
+					case 0x13:
+						this.onplayeralreadyconn();
+						break;
+					case 0x14:
+						this.onlobbyfull();
 						break;
 					case 0x22:
 						this.onwin(msg.substring(1));
