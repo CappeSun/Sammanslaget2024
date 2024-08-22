@@ -4,7 +4,48 @@ import {WebSocketServer} from 'ws';
 //            0x10=create new lobby (toServer, onConnect) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13=lobby created (toClient), 0x14=lobby full (toClient), 0x15=lobby and name needed (toClient)
 //            0x1A=player added image to card (toServer), 0x1B=player removed image from card (toServer), 0x1C=player done with card (toServer) other player done with card (toClient)
 
-const squareTexts = ['temp1', 'temp2', 'temp3', 'temp4', 'temp5', 'temp6', 'temp7', 'temp8', 'temp9'];
+const squareTexts = [
+	"🛕Glenpire State Building som ser ut som en gylf",
+	"🍬Hörnbutik, gymnasieelever, chokladboll",
+	"🚢Stor grej som flyter över älven",
+	"🧪Café, äldre vetenskap",
+	"🐦Flygande råtta, tar ens mat, skriker",
+	"⚓️Sjömanskrog, gammal kung",
+	"🚢Hållplats, vatten, lunchställen",
+	"📚Färgglad, studenter, kantigt men runt",
+	"🏰Biograf, första byggnad med el, kulturminnesmärkt",
+	"🎭Pjäser, gammal plåtverkstad",
+	"🚲Två hjul, ingen respekt för gång- och biltrafikanter",
+	"🚍Förseningar, väntkur, tidtabel",
+	"👯Musikal- och danslinje som var första i sitt slag",
+	"📽Produktionsbolag, känd för Smala Susie",
+	"🚤Gammal salthamn, idag bryggplats för båtar",
+	"🧠Staty bestående av bokstäver och hjärna",
+	"🏢Studenter, grått och kantigt boende",
+	"🍻Där chalmerister blir fulla",
+	"🏊‍♀️Gräsplätt som blir en bassäng vid kraftig skyfall",
+	"👩‍💼Plats där studenter förbereder sig för yrket",
+	"🥼Plats för innovation",
+	"🏃‍♀️Person som tränar med rappa steg",
+	"☕️Bägare med svart varm dryck i",
+	"🦴Lurvig varelse på fyra ben",
+	"🧱Gångbana över vatten",
+	"🛶Mindre fartyg som tar en över vattnet",
+	"🚤Plats för att hyra båtar",
+	"🏡Tidigare plats för en borg, nuförtiden trähus",
+	"📞Företag, telekommunikation",
+	"📺Public service-bolag för tv",
+	"🌳Väg omringad av träd",
+	"🍲Matställe som delar på ägarskapet",
+	"🥐Café med utsikt över vattnet",
+	"🧹Aktivitet där man sopar på isen",
+	"🍝Matställe med hemmagjord pasta",
+	"🎸Byggnad med 52 replokaler",
+	"📻Samling med gamla radion",
+	"📹Svensk tillverkare av kameror sedan 1941",
+	"👩‍🍳Plats att köpa mat som elever har tillverkat",
+	"🤝Mötesplats för hållbar samhällsutveckling"
+];
 
 const wss = new WebSocketServer({port: 444});
 let lobbies = {};
