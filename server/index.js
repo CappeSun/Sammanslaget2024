@@ -13,6 +13,7 @@ let lobbies = {};
 demoLobby = {
 	card: ['mås', 'båt', 'etc', 'etc', 'etc', 'etc', 'etc', 'etc', 'etc'],
 	isWon: false,
+	isStarted: false,
 	players: [
 		{
 			ws: ws,
@@ -54,6 +55,7 @@ wss.on('connection', (ws, req) =>{
 			lobbies[lobby] = {
 				card: createCard(),
 				isWon: false,
+				isStarted: false,
 				players: []
 			};
 			lobbies[lobby].players.push({ws: ws, name: name, card: [null, null, null, null, null, null, null, null, null], time: null});
@@ -82,6 +84,7 @@ wss.on('connection', (ws, req) =>{
 					console.log(`${name} connected to ${lobby}, currently ${lobbies[lobby].players.length} players in ${lobby}`);
 
 					sendMsg(charCode(0x02) + JSON.stringify(lobbies[lobby].card));
+					lobbies[lobby].isStarted = true;
 				}else{							// Lobby full
 					ws.send(charCode(0x14));
 					console.log(`${name} tried to connect to ${lobby} but that lobby was already full`);
@@ -101,7 +104,7 @@ wss.on('connection', (ws, req) =>{
 	lobbies[lobby].players.forEach((player) =>{
 		recoplayernames.push({name: player.name/*, card: player.card, time: player.time*/});
 	});
-	ws.send(charCode(0x00) + JSON.stringify(players));
+	ws.send(charCode(0x00) + JSON.stringify(recoplayernames));
 
 	console.log(lobbies);		// Debug
 
@@ -124,14 +127,14 @@ wss.on('connection', (ws, req) =>{
 				sendMsg(charCode(0x04));
 				break;
 			case 0x1A:
-				setCard(msg[1], `https://sputnik.zone/school/Sammanslaget2024/image/images/${lobby + name + msg[1]}`);
+				setCard(msg[1], `https://sputnik.zone/school/Sammanslaget2024/image/images/${lobby + name + msg[1]}.jpg`);
 				break;
 			case 0x1B:
-				fetch(`https://sputnik.zone/school/Sammanslaget2024/image/removeImage.php?id=${msg[1]}`);
+				fetch(`https://sputnik.zone/school/Sammanslaget2024/image/removeImage.php?lobbynameid=${lobby + name + msg[1]}`);
 				setCard(msg[1], null);
 				break;
 			case 0x1C:
-				if (!lobbies[lobby].isWon){
+				if (!lobbies[lobby].isWon && lobbies[lobby].isStarted){
 					lobbies[lobby].isWon = true;
 					sendMsg(charCode(0x1C) + name);
 					console.log(`${lobby} done, ${name} won`);
