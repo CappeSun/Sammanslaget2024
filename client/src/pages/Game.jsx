@@ -11,13 +11,37 @@ const WS_URL = import.meta.env.WS_SERVER_URL ?? 'ws://0.0.0.0:444'
 const Game = () => {
   const { id } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
-  const { game } = useGameContext()
+  const { game, setGame } = useGameContext()
   const ws = useWebSocket(
     `${WS_URL}/${searchParams.get('username') + charCode(0x00)}${searchParams.get('create') ? charCode(0x10) : ''}${id}`,
     {
       share: true,
       shouldReconnect: () => true,
-      onMessage: ev => console.log(ev)
+      onMessage: ev => {
+        try {
+          const type = ev.data.charCodeAt(0)
+          const obj = JSON.parse(ev.data.substring(1))
+
+          console.log({ type, obj })
+
+          // 00 Players data
+          // 01 Reconect
+          // 02 Game start
+
+          if (type === 0) {
+            setGame(prev => ({
+              ...prev,
+              users: obj
+            }))
+          }
+
+          if (type === 2) {
+            setGame(prev => ({ ...prev, isGameStarted: true }))
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
     }
   )
 

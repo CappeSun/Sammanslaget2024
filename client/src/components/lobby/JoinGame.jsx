@@ -1,15 +1,21 @@
 import { useState } from 'react'
 import CodeForm from './CodeForm'
 import NameForm from './NameForm'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import Typography from '../common/Typography'
 
 const JoinGame = ({}) => {
   const [form, setForm] = useState({})
 
+  const navigate = useNavigate()
+
   const handleSubmit = values => {
     console.log(values)
+
+    if (values.code) {
+      navigate(`/game/${values.code}?username=${form.name}`)
+    }
 
     setForm(prev => ({ ...prev, ...values }))
   }
