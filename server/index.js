@@ -1,7 +1,7 @@
 import {WebSocketServer} from 'ws';
 
 // Charcodes: 0x00=request server send user (name) data (toServer), 0x01=player (card) data on reconnect (toClient), 0x02=start lobby (toClient), 0x03=keepalive (serverClient)
-//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13=player already connected (toClient), 0x14=lobby full (toClient), 0x15=lobby and name needed
+//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13= (toClient), 0x14=lobby full (toClient), 0x15=lobby and name needed
 //            0x1A=player added image to card (toServer), 0x1B=player removed image from card (toServer), 0x1C=player done with card (toServer) other player done with card (toClient)
 
 const squareTexts = ['temp1', 'temp2', 'temp3', 'temp4', 'temp5', 'temp6', 'temp7', 'temp8', 'temp9'];
@@ -57,7 +57,7 @@ wss.on('connection', (ws, req) =>{
 				players: []
 			};
 			lobbies[lobby].players.push({ws: ws, name: name, card: [null, null, null, null, null, null, null, null, null], time: null});
-			ws.send('yuppi c:');
+			ws.send(charCode(0x13));
 
 			console.log(`${name} created and connected to ${lobby}, currently ${lobbies[lobby].players.length} players in ${lobby}`);
 		}
@@ -65,7 +65,7 @@ wss.on('connection', (ws, req) =>{
 		if (lobbies[lobby]){							// Check if lobby exists
 			if (lobbies[lobby].players.find((player) => player.name === name)){		// Check if name in lobby
 				if (lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].ws){			// Check if player already connected
-					ws.send(charCode(0x13));
+					ws.send(charCode(0x11));
 					console.log(`${name} tried to connect to ${lobby} but that name was already connected`);
 					ws.close();
 					return;
