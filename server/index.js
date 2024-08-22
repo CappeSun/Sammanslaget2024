@@ -71,7 +71,7 @@ wss.on('connection', (ws, req) =>{
 					return;
 				}else{					// Player not connected
 					lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].ws = ws;
-					ws.send(charCode(0x01) + JSON.stringify(lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].card));
+					ws.send(charCode(0x01) + JSON.stringify({lobby: lobbies[lobby].card, player: lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].card}));
 
 					console.log(`${name} reconnected to ${lobby}`);
 				}

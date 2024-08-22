@@ -34,7 +34,7 @@ export class Bingo{
 						this.ongetusers(JSON.parse(msg.substring(1)));		// Returns array of usernames
 						break;
 					case 0x01:
-						this.onreconnect(JSON.parse(msg.substring(1)));		// Returns returning players card as array of urls/null
+						this.onreconnect(JSON.parse(msg.substring(1)));		// Returns lobby card and returning players card as {lobby: array of string, player: array of urls/null}
 						break;
 					case 0x02:
 						this.onstart(JSON.parse(msg.substring(1)));		// Returns lobby card
