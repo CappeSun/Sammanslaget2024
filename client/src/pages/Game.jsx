@@ -1,12 +1,14 @@
+import Typography from '@/components/common/Typography'
 import GameOver from '@/components/game/GameOver'
 import Grid from '@/components/game/Grid'
 import { useGameContext } from '@/lib/context/GameContext'
 import { charCode } from '@/lib/util'
+import { ArrowLeft } from 'lucide-react'
 import { useEffect } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import useWebSocket from 'react-use-websocket'
 
-const WS_URL = import.meta.env.WS_SERVER_URL ?? 'ws://0.0.0.0:444'
+const WS_URL = import.meta.env.WS_SERVER_URL ?? 'ws://127.0.0.1:443'
 
 const Game = () => {
   const { id } = useParams()
@@ -74,7 +76,31 @@ const Game = () => {
   }, [])
 
   if (!game.isGameStarted) {
-    return <section>Lobby</section>
+    return (
+      <section className='flex h-svh flex-col'>
+        <div className='flex items-center p-4'>
+          <Link to={'/'}>
+            <ArrowLeft />
+          </Link>
+          <Typography className={'w-full pr-4 text-center text-sm uppercase'}>
+            Starta nytt spel
+          </Typography>
+        </div>
+        <div className='mb-8 flex flex-col items-center gap-4 pt-16'>
+          <Typography className={'text-dark-purple text-4xl font-black'}>
+            Dela Pin-Kod
+          </Typography>
+          <Typography className={'text-dark-purple text-xl'}>
+            Dela Pin-Koden med din medspelare
+          </Typography>
+        </div>
+        <div className='border-dark-purple text-dark-purple mx-auto flex w-fit gap-4 rounded-xl border bg-white p-2 text-center text-4xl font-black'>
+          {id.split('').map(item => (
+            <span>{item}</span>
+          ))}
+        </div>
+      </section>
+    )
   }
 
   return (

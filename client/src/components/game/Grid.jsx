@@ -1,5 +1,6 @@
 import { useGameContext } from '@/lib/context/GameContext'
 import { cn } from '@/lib/util'
+import Typography from '../common/Typography'
 
 /**
  * Grid Item
@@ -45,7 +46,11 @@ const GridItem = ({ className, index, item, ...props }) => {
           className='aspect-square max-w-full object-cover'
         />
       ) : (
-        item
+        <>
+          <Typography className={'text-center text-sm font-medium leading-6'}>
+            {item}
+          </Typography>
+        </>
       )}
     </Comp>
   )
