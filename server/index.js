@@ -47,7 +47,7 @@ const squareTexts = [
 	"🤝Mötesplats för hållbar samhällsutveckling"
 ];
 
-const wss = new WebSocketServer({port: 444});
+const wss = new WebSocketServer({port: 443});
 let lobbies = {};
 
 /*
