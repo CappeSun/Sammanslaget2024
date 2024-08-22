@@ -73,7 +73,7 @@ wss.on('connection', (ws, req) =>{
 					return;
 				}else{					// Player not connected
 					lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].ws = ws;
-					ws.send(charCode(0x01) + JSON.stringify({lobby: lobbies[lobby].card, player: lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].card}));
+					ws.send(charCode(0x01) + JSON.stringify({lobby: lobbies[lobby].card, player: lobbies[lobby].players[lobbies[lobby].players.findIndex((player) => player.name === name)].card, isStarted: lobbies[lobby].isStarted}));
 
 					console.log(`${name} reconnected to ${lobby}`);
 				}
@@ -102,7 +102,7 @@ wss.on('connection', (ws, req) =>{
 
 	let recoplayernames = [];							// Send player data on connect
 	lobbies[lobby].players.forEach((player) =>{
-		recoplayernames.push({name: player.name/*, card: player.card, time: player.time*/});
+		recoplayernames.push(player.name);
 	});
 	sendMsg(charCode(0x00) + JSON.stringify(recoplayernames));
 
