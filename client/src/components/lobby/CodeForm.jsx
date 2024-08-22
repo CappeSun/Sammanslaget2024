@@ -12,6 +12,7 @@ import {
   FormMessage
 } from '@/components/common/Form'
 import { Button } from '@/components/common/Button'
+import Typography from '../common/Typography'
 
 const REGEXP_ONLY_DIGITS_AND_CHARS_REGEX = new RegExp(
   REGEXP_ONLY_DIGITS_AND_CHARS
@@ -30,42 +31,52 @@ const CodeForm = ({ handleSubmit }) => {
   })
 
   return (
-    <section>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(handleSubmit)}
-          className='flex h-svh flex-col justify-between py-4'
-        >
-          <FormField
-            control={form.control}
-            name='code'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pin kåd</FormLabel>
-                <FormControl>
-                  <InputOTP
-                    maxLength={4}
-                    pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
-                    {...field}
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(handleSubmit)}
+        className='flex flex-grow flex-col items-center justify-between p-4 pt-16'
+      >
+        <FormField
+          control={form.control}
+          name='code'
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                <div className='mb-8 flex flex-col items-center gap-4'>
+                  <Typography
+                    className={'text-dark-purple text-4xl font-black'}
                   >
-                    <InputOTPGroup>
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                      <InputOTPSlot index={3} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button disabled={!form.formState.isValid} className='mt-4'>
-            Gå vidare
-          </Button>
-        </form>
-      </Form>
-    </section>
+                    Dela Pin-Kod
+                  </Typography>
+                  <Typography className={'text-dark-purple text-xl'}>
+                    Dela Pin-Koden med din medspelare
+                  </Typography>
+                </div>
+              </FormLabel>
+              <FormControl>
+                <InputOTP
+                  containerClassName='bg-white rounded-xl w-fit mx-auto'
+                  maxLength={4}
+                  pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                  {...field}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button disabled={!form.formState.isValid} className='mt-4 w-full'>
+          Gå vidare
+        </Button>
+      </form>
+    </Form>
   )
 }
 

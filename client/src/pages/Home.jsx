@@ -6,14 +6,15 @@ const Home = () => {
   return (
     <section className='flex h-svh flex-col justify-between'>
       <video
-        className='fixed inset-0 -z-50 h-svh w-screen object-cover'
+        className='playsinline fixed inset-0 -z-50 h-svh w-screen select-none object-cover'
+        playsInline
         muted
         autoPlay
         loop
       >
         <source src='/game.mov' />
       </video>
-      <header className='p-4 text-white'>
+      <header className='p-4 pt-8 text-white'>
         <Typography
           variant='h1'
           className='font-outline-2 select-none text-center text-6xl font-black uppercase italic'
@@ -24,7 +25,7 @@ const Home = () => {
           Upptäck Lindholmen
         </Typography>
       </header>
-      <div className='flex flex-col gap-4 bg-gradient-to-t from-zinc-600/80 to-transparent p-4'>
+      <div className='flex flex-col gap-4 bg-gradient-to-t from-zinc-200/80 to-transparent p-4'>
         <Button asChild>
           <Link to={'/game?type=join'}>Gå med</Link>
         </Button>
