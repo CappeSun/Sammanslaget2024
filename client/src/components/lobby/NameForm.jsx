@@ -29,7 +29,7 @@ const NameForm = ({ handleSubmit }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className='flex h-screen flex-col justify-between py-4'
+          className='flex h-svh flex-col justify-between py-4'
         >
           <FormField
             control={form.control}

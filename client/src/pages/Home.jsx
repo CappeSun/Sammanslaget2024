@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
   return (
-    <section className='flex h-screen flex-col justify-between py-4'>
+    <section className='flex h-svh flex-col justify-between py-4'>
       <Typography variant='h1' className='text-center uppercase'>
         Bingo
       </Typography>
