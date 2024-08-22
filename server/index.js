@@ -1,7 +1,7 @@
 import {WebSocketServer} from 'ws';
 
-// Charcodes: 0x00=request server send user (name) data (toServer), 0x01=player (card) data on reconnect (toClient), 0x02=start lobby (toClient), 0x03=keepalive (serverClient)
-//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13= (toClient), 0x14=lobby full (toClient), 0x15=lobby and name needed
+// Charcodes: 0x00=request server send player data (toServer) player data (toClient), 0x01=lobby card and player data object on reconnect (toClient), 0x02=lobby started (toClient), 0x03=keepalive (serverClient), 0x04=end lobby (toServer) lobby ended (toClient)
+//            0x10=create new lobby (toServer) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13=lobby created (toClient), 0x14=lobby full (toClient), 0x15=lobby and name needed
 //            0x1A=player added image to card (toServer), 0x1B=player removed image from card (toServer), 0x1C=player done with card (toServer) other player done with card (toClient)
 
 const squareTexts = ['temp1', 'temp2', 'temp3', 'temp4', 'temp5', 'temp6', 'temp7', 'temp8', 'temp9'];
@@ -97,6 +97,12 @@ wss.on('connection', (ws, req) =>{
 		}
 	}
 
+	let recoplayernames = [];							// Send player data on connect
+	lobbies[lobby].players.forEach((player) =>{
+		recoplayernames.push({name: player.name/*, card: player.card, time: player.time*/});
+	});
+	ws.send(charCode(0x00) + JSON.stringify(players));
+
 	console.log(lobbies);		// Debug
 
 	console.log('if player failed to connect, this shouldn\'t be here :p (just testing)');
@@ -106,13 +112,16 @@ wss.on('connection', (ws, req) =>{
 
 		switch (msg[0]){
 			case 0x00:
-				let players = [];
+				let playernames = [];
 				lobbies[lobby].players.forEach((player) =>{
-					players.push({name: player.name/*, card: player.card, time: player.time*/});
+					playernames.push({name: player.name/*, card: player.card, time: player.time*/});
 				});
-				ws.send(JSON.stringify(players));
+				ws.send(charCode(0x00) + JSON.stringify(players));
 				break;
 			case 0x03:		// Keepalive
+				break;
+			case 0x04:		// Lobby ended by player
+				sendMsg(charCode(0x04));
 				break;
 			case 0x1A:
 				setCard(msg[1], `https://sputnik.zone/school/Sammanslaget2024/image/images/${lobby + name + msg[1]}`);
