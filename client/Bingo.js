@@ -9,15 +9,16 @@ export class Bingo{
 	#onplayeralreadyconn;
 	#onlobbyfull;
 	#onlobbynameempty;
-	constructor(onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onlobbyfull, onplayeralreadyconn, onlobbynameempty){
+	constructor(onlobbycreated, onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onlobbyfull, onlobbynameempty){
+		this.onlobbycreated = onlobbycreated;
 		this.onwin = onwin;
 		this.ongetusers = ongetusers;
 		this.onstart = onstart;
 		this.onreconnect = onreconnect;
 		this.ondisconnect = ondisconnect;
 		this.onnametaken = onnametaken;
+		this.onlobbynotfound = onlobbynotfound;
 		this.onlobbytaken = onlobbytaken;
-		this.onplayeralreadyconn = onplayeralreadyconn;
 		this.onlobbyfull = onlobbyfull;
 		this.onlobbynameempty = onlobbynameempty;
 	}
@@ -25,7 +26,7 @@ export class Bingo{
 	enterLobby(name, lobby, isCreate){
 		if (this.ws) return;		// Cannot enter lobby while connected to lobby
 
-		this.ws = new WebSocket(`ws://0.0.0.0:443/${name + charCode(0x00) + (isCreate ? charCode(0x10) : '') + lobby}`);
+		this.ws = new WebSocket(`ws://127.0.0.1:444/${name + charCode(0x00) + (isCreate ? charCode(0x10) : '') + lobby}`);
 		this.ws.onopen = () =>{
 			this.ws.onmessage = (event) =>{
 				let msg = event.data;
@@ -52,7 +53,7 @@ export class Bingo{
 						this.onlobbynotfound();
 						break;
 					case 0x13:
-						this.onplayeralreadyconn();
+						this.onlobbycreated();
 						break;
 					case 0x14:
 						this.onlobbyfull();
