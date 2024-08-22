@@ -104,7 +104,7 @@ wss.on('connection', (ws, req) =>{
 	lobbies[lobby].players.forEach((player) =>{
 		recoplayernames.push({name: player.name/*, card: player.card, time: player.time*/});
 	});
-	ws.send(charCode(0x00) + JSON.stringify(recoplayernames));
+	sendMsg(charCode(0x00) + JSON.stringify(recoplayernames));
 
 	console.log(lobbies);		// Debug
 
