@@ -38,14 +38,14 @@ const GridItem = ({ className, index, item, ...props }) => {
           onChange={handleFileChange}
         />
       )}
-      {item.image ? (
+      {game.user[index] ? (
         <img
-          src={item.image.url}
+          src={game.user[index].url}
           alt=''
           className='aspect-square max-w-full object-cover'
         />
       ) : (
-        item.name
+        item
       )}
     </Comp>
   )

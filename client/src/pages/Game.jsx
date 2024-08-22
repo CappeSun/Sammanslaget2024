@@ -35,8 +35,29 @@ const Game = () => {
             }))
           }
 
+          if (type === 1) {
+            const images = obj.player.map((item, index) => {
+              const localImage = localStorage.getItem(
+                `game_item_${index}_code_${id}_user_${searchParams.get('username')}_image_base64`
+              )
+
+              if (localImage) {
+                return { url: localImage }
+              }
+
+              return item
+            })
+
+            setGame(prev => ({
+              ...prev,
+              isGameStarted: obj.isStarted,
+              items: obj.lobby,
+              user: images
+            }))
+          }
+
           if (type === 2) {
-            setGame(prev => ({ ...prev, isGameStarted: true }))
+            setGame(prev => ({ ...prev, isGameStarted: true, items: obj }))
           }
         } catch (error) {
           console.log(error)

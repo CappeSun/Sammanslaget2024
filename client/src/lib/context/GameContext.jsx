@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 export const GameContext = createContext(null)
 
@@ -42,23 +43,41 @@ const defaultGame = [
 ]
 
 const GameProvider = ({ children }) => {
+  const params = useParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [game, setGame] = useState({
-    items: defaultGame,
+    items: [],
+    user: [],
     isGameOver: false,
     isGameStarted: false
   })
 
   const takePicture = (file, index) => {
-    const newItems = game.items
-    newItems[index].image = {
-      file,
-      url: URL.createObjectURL(file)
+    const reader = new FileReader()
+
+    reader.onloadend = () => {
+      const base64String = reader.result
+
+      // Update the game state
+      const newItems = game.user
+      newItems[index] = {
+        file,
+        url: base64String
+      }
+
+      // Save the base64 string to localStorage
+      localStorage.setItem(
+        `game_item_${index}_code_${params.id}_user_${searchParams.get('username')}_image_base64`,
+        base64String
+      )
+
+      setGame(prev => ({
+        ...prev,
+        user: newItems
+      }))
     }
 
-    setGame(prev => ({
-      ...prev,
-      items: newItems
-    }))
+    reader.readAsDataURL(file)
   }
 
   const isGameOver = () => {
