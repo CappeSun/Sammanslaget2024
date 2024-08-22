@@ -11,3 +11,8 @@
     @apply after:absolute after:bottom-0 after:left-0 after:h-[1px] after:w-full after:bg-black;
   }
 }
+
+* {
+  font-family: 'ruddy', sans-serif;
+  font-style: normal;
+}

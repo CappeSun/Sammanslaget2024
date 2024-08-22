@@ -8,6 +8,7 @@ const InputOTP = forwardRef(
   ({ className, containerClassName, ...props }, ref) => (
     <OTPInput
       ref={ref}
+      inputMode='numeric'
       containerClassName={cn(
         'flex items-center gap-2 has-[:disabled]:opacity-50',
         containerClassName
@@ -42,7 +43,7 @@ const InputOTPSlot = forwardRef(({ index, className, ...props }, ref) => {
       {char}
       {hasFakeCaret && (
         <div className='pointer-events-none absolute inset-0 flex items-center justify-center'>
-          <div className='animate-caret-blink bg-foreground h-4 w-px duration-1000' />
+          <div className='bg-foreground h-4 w-px animate-caret-blink duration-1000' />
         </div>
       )}
     </div>

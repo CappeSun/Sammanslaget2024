@@ -37,3 +37,19 @@ export const mergeReactProps = (parentProps, childProps) => {
 
   return { ...parentProps, ...overrideProps }
 }
+
+export const generateCode = () => {
+  let code = ''
+
+  for (let i = 0; i < 4; i++) {
+    const ranNum = Math.floor(Math.random() * 10).toString()
+
+    code = code + ranNum
+  }
+
+  return code
+}
+
+export const charCode = code => {
+  return String.fromCharCode(code)
+}

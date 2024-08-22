@@ -18,7 +18,7 @@ const REGEXP_ONLY_DIGITS_AND_CHARS_REGEX = new RegExp(
 )
 
 const codeFormSchema = z.object({
-  code: z.string().min(6).regex(REGEXP_ONLY_DIGITS_AND_CHARS_REGEX)
+  code: z.string().min(4).regex(REGEXP_ONLY_DIGITS_AND_CHARS_REGEX)
 })
 
 const CodeForm = ({ handleSubmit }) => {
@@ -34,7 +34,7 @@ const CodeForm = ({ handleSubmit }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
-          className='flex h-screen flex-col justify-between py-4'
+          className='flex h-svh flex-col justify-between py-4'
         >
           <FormField
             control={form.control}
@@ -44,7 +44,7 @@ const CodeForm = ({ handleSubmit }) => {
                 <FormLabel>Pin kåd</FormLabel>
                 <FormControl>
                   <InputOTP
-                    maxLength={6}
+                    maxLength={4}
                     pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
                     {...field}
                   >
@@ -53,8 +53,6 @@ const CodeForm = ({ handleSubmit }) => {
                       <InputOTPSlot index={1} />
                       <InputOTPSlot index={2} />
                       <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
                     </InputOTPGroup>
                   </InputOTP>
                 </FormControl>
