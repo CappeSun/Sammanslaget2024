@@ -9,8 +9,9 @@ export class Bingo{
 	#onplayeralreadyconn;
 	#onlobbyfull;
 	#onlobbynameempty;
-	constructor(onlobbycreated, onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onlobbyfull, onlobbynameempty){
+	constructor(onlobbycreated, onlobbyclosed, onwin, ongetusers, onstart, onreconnect, ondisconnect, onnametaken, onlobbytaken, onlobbynotfound, onlobbyfull, onlobbynameempty){
 		this.onlobbycreated = onlobbycreated;
+		this.onlobbyclosed = onlobbyclosed;
 		this.onwin = onwin;
 		this.ongetusers = ongetusers;
 		this.onstart = onstart;
