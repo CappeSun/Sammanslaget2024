@@ -8,7 +8,6 @@ const CreateGame = () => {
   const navigate = useNavigate()
 
   const handleSubmit = values => {
-    console.log(values)
     const code = generateCode()
     navigate(`/game/${code}?username=${values.name}&create=true`)
   }

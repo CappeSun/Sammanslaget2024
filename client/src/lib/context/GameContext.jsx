@@ -42,7 +42,11 @@ const defaultGame = [
 ]
 
 const GameProvider = ({ children }) => {
-  const [game, setGame] = useState({ items: defaultGame, isGameOver: false })
+  const [game, setGame] = useState({
+    items: defaultGame,
+    isGameOver: false,
+    isGameStarted: false
+  })
 
   const takePicture = (file, index) => {
     const newItems = game.items
@@ -84,7 +88,7 @@ const GameProvider = ({ children }) => {
   }
 
   return (
-    <GameContext.Provider value={{ game, takePicture, isGameOver }}>
+    <GameContext.Provider value={{ game, takePicture, isGameOver, setGame }}>
       {children}
     </GameContext.Provider>
   )
