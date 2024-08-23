@@ -74,8 +74,8 @@ demoLobby = {
 
 wss.on('connection', (ws, req) =>{
 	req.url = decodeURI(req.url);
-	let name = req.url.substring(1).split(charCode(0x5C))[0];
-	let lobby = req.url.substring(1).split(charCode(0x5C))[1];
+	let name = req.url.substring(1).split(charCode(0x7C))[0];
+	let lobby = req.url.substring(1).split(charCode(0x7C))[1];
 	let active = true;
 
 	if (lobby == '' || name == ''){
