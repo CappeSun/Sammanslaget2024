@@ -23,7 +23,7 @@ const Game = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const { game, setGame } = useGameContext()
   const { sendMessage } = useWebSocket(
-    `${WS_URL}/${searchParams.get('username') + charCode(0x00)}${searchParams.get('create') ? charCode(0x10) : ''}${id}`,
+    `${WS_URL}/${searchParams.get('username') + charCode(0x7C)}${searchParams.get('create') ? charCode(0x40) : ''}${id}`,
     {
       share: true,
       shouldReconnect: () => true,
