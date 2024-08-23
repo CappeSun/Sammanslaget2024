@@ -74,8 +74,8 @@ demoLobby = {
 
 wss.on('connection', (ws, req) =>{
 	req.url = decodeURI(req.url);
-	let name = req.url.substring(1).split(charCode(0x00))[0];
-	let lobby = req.url.substring(1).split(charCode(0x00))[1];
+	let name = req.url.substring(1).split(charCode(0x5C))[0];
+	let lobby = req.url.substring(1).split(charCode(0x5C))[1];
 	let active = true;
 
 	if (lobby == '' || name == ''){
@@ -85,7 +85,7 @@ wss.on('connection', (ws, req) =>{
 		return;
 	}
 
-	if (lobby[0] == charCode(0x10)){		// Check if create lobby
+	if (lobby[0] == charCode(0x40)){		// Check if create lobby
 		lobby = lobby.substring(1);
 		if (lobbies[lobby]){			// Check if lobby exists
 			ws.send(charCode(0x10));
