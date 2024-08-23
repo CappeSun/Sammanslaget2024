@@ -1,4 +1,10 @@
-import { createContext, useContext, useState } from 'react'
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 export const GameContext = createContext(null)
@@ -47,7 +53,7 @@ const GameProvider = ({ children }) => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [game, setGame] = useState({
     items: [],
-    user: [],
+    user: [null, null, null, null, null, null, null, null, null],
     isGameOver: false,
     isGameStarted: false
   })
@@ -80,7 +86,7 @@ const GameProvider = ({ children }) => {
     reader.readAsDataURL(file)
   }
 
-  const isGameOver = () => {
+  const isGameOver = game => {
     const winningCombinations = [
       // Rows
       [0, 1, 2],
@@ -95,11 +101,15 @@ const GameProvider = ({ children }) => {
       [2, 4, 6]
     ]
 
-    const { items } = game
-
     for (let combination of winningCombinations) {
       const [a, b, c] = combination
-      if (items[a].image && items[b].image && items[c].image) {
+      console.log(game.user[a], game.user[b], game.user[c])
+      // Check if the elements at indexes a, b, and c are not null
+      if (
+        game.user[a] !== null &&
+        game.user[b] !== null &&
+        game.user[c] !== null
+      ) {
         setGame(prev => ({ ...prev, isGameOver: true }))
         return
       }

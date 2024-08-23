@@ -17,13 +17,23 @@ const GridItem = ({ className, index, item, ...props }) => {
     if (files && files.length) takePicture(files[0], index)
   }
 
+  const emojiMatches = item.match(
+    /(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?)/gu
+  )
+  const emojis = emojiMatches ? emojiMatches.join('') : ''
+  const text = item
+    .replace(
+      /(\p{Emoji_Presentation}|\p{Emoji}\uFE0F|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?)/gu,
+      ''
+    )
+    .trim()
+
   return (
     <Comp
       htmlFor={item.name}
       className={cn(
-        'relative flex aspect-square items-center justify-center',
-        { 'grid-item-before': index % 3 !== 2 },
-        { 'grid-item-after': index < 6 },
+        'bg-bingo-green relative flex items-center justify-center rounded-lg text-white',
+        { 'overflow-hidden': game.user[index] },
         className
       )}
       {...props}
@@ -43,14 +53,15 @@ const GridItem = ({ className, index, item, ...props }) => {
         <img
           src={game.user[index].url}
           alt=''
-          className='aspect-square max-w-full object-cover'
+          className='h-full max-w-full object-cover'
         />
       ) : (
-        <>
-          <Typography className={'text-center text-sm font-medium leading-6'}>
-            {item}
-          </Typography>
-        </>
+        <div
+          className={'overflow-hidden p-2 text-center text-base font-semibold'}
+        >
+          <Typography className={'font-inter text-lg'}>{emojis}</Typography>
+          <Typography className={'font-inter break-words'}>{text}</Typography>
+        </div>
       )}
     </Comp>
   )
@@ -61,21 +72,35 @@ const GridItem = ({ className, index, item, ...props }) => {
  */
 
 const Grid = ({ className, items, ...props }) => {
-  const { isGameOver } = useGameContext()
+  const { game } = useGameContext()
 
   return (
-    <form
-      onChange={isGameOver}
-      className={cn(
-        'grid grid-cols-3 grid-rows-3 border border-black',
-        className
-      )}
-      {...props}
-    >
-      {items.map((item, index) => (
-        <GridItem key={index} index={index} item={item} />
-      ))}
-    </form>
+    <div className='bg-bingo-green/30 mb-4 flex flex-grow flex-col rounded-xl pb-2'>
+      <div className='font-outline-2 flex select-none items-center justify-center gap-2 p-2 text-2xl font-black italic text-white'>
+        <Typography className={'capitalize'}>
+          {Array.isArray(game.users) && game.users[0]
+            ? game.users[0]
+            : 'Spelare 1'}
+        </Typography>
+        <Typography className={'text-base font-black'}>vs.</Typography>
+        <Typography className={'capitalize'}>
+          {Array.isArray(game.users) && game.users[1]
+            ? game.users[1]
+            : 'Spelare 2'}
+        </Typography>
+      </div>
+      <form
+        className={cn(
+          'grid flex-grow grid-cols-3 grid-rows-3 gap-2',
+          className
+        )}
+        {...props}
+      >
+        {items.map((item, index) => (
+          <GridItem key={index} index={index} item={item} />
+        ))}
+      </form>
+    </div>
   )
 }
 
