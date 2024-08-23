@@ -27,7 +27,7 @@ export class Bingo{
 	enterLobby(name, lobby, isCreate){
 		if (this.ws) return;		// Cannot enter lobby while connected to lobby
 
-		this.ws = new WebSocket(`ws://127.0.0.1:444/${name + charCode(0x00) + (isCreate ? charCode(0x10) : '') + lobby}`);
+		this.ws = new WebSocket(`wss://sammanslaget2024.onrender.com:443/${name + charCode(0x7C) + (isCreate ? charCode(0x40) : '') + lobby}`);		// ws://127.0.0.1:444
 		this.ws.onopen = () =>{
 			this.ws.onmessage = (event) =>{
 				let msg = event.data;
