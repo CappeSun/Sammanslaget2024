@@ -1,6 +1,6 @@
 import {WebSocketServer} from 'ws';
 
-// Charcodes: 0x00=request server send player data (toServer) player data (toClient), 0x01=lobby card and player data object on reconnect (toClient), 0x02=lobby started (toClient), 0x03=keepalive (serverClient), 0x04=end lobby (toServer) lobby ended (toClient)
+// Charcodes: 0x00=request server send player data (toServer) player data (toClient), 0x01=lobby card and player data object on reconnect (toClient) delimiter (toServer, onConnect), 0x02=lobby started (toClient), 0x03=keepalive (serverClient), 0x04=end lobby (toServer) lobby ended (toClient)
 //            0x10=create new lobby (toServer, onConnect) lobby already exists (toClient), 0x11=name already taken (toClient), 0x12=lobby not found (toClient), 0x13=lobby created (toClient), 0x14=lobby full (toClient), 0x15=lobby and name needed (toClient)
 //            0x1A=player added image to card (toServer), 0x1B=player removed image from card (toServer), 0x1C=player done with card (toServer) other player done with card (toClient)
 
@@ -74,8 +74,8 @@ demoLobby = {
 
 wss.on('connection', (ws, req) =>{
 	req.url = decodeURI(req.url);
-	let name = req.url.substring(1).split(charCode(0x7C))[0];
-	let lobby = req.url.substring(1).split(charCode(0x7C))[1];
+	let name = req.url.substring(1).split(charCode(0x01))[0];
+	let lobby = req.url.substring(1).split(charCode(0x01))[1];
 	let active = true;
 
 	if (lobby == '' || name == ''){
@@ -85,7 +85,7 @@ wss.on('connection', (ws, req) =>{
 		return;
 	}
 
-	if (lobby[0] == charCode(0x40)){		// Check if create lobby
+	if (lobby[0] == charCode(0x10)){		// Check if create lobby
 		lobby = lobby.substring(1);
 		if (lobbies[lobby]){			// Check if lobby exists
 			ws.send(charCode(0x10));
